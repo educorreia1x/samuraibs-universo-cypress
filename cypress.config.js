@@ -4,18 +4,21 @@ const { Pool } = require("pg");
 module.exports = defineConfig({
   viewportWidth: 1440,
   viewportHeight: 900,
+  "dbConfig": {
+    "host": "peanut.db.elephantsql.com",
+    "user": "npjexkhe",
+    "password": "RnTt7fM8PJ1Ma6QnhZEwhJj4owAsHGoi",
+    "database": "npjexkhe",
+    "port": 5432
+  },
   e2e: {
     "baseUrl": "http://localhost:3000",
     setupNodeEvents(on, config) {
       // implement node event listeners here
 
-      const pool = new Pool({
-        host: 'peanut.db.elephantsql.com',
-        user: 'npjexkhe',
-        password: 'RnTt7fM8PJ1Ma6QnhZEwhJj4owAsHGoi',
-        database: 'npjexkhe',
-        port: 5432
-      })
+      const configJson = require(config.configFile)
+
+      const pool = new Pool(configJson.dbConfig)
 
       on('task', {
         removeUser(email) {
