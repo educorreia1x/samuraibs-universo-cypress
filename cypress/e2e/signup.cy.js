@@ -1,15 +1,18 @@
 import signupPage from '../support/pages/signup'
 describe('cadastro', function () {
 
-    context('quando o usuario é novato', function () {
-        const user = {
-            name: 'Edu',
-            email: 'qa10@putsbox.com',
-            password: 'Teste123456'
-        }
+    before(function () {
+        cy.fixture('signup').then(function (signup) {
+            this.success = signup.success
+            this.email_dup = signup.email_dup
+            this.email_inv = signup.email_inv
+            this.short_password = signup.short_password
+        })
+    })
 
+    context('quando o usuario é novato', function () {
         before(function () {
-            cy.task('removeUser', user.email)
+            cy.task('removeUser', this.success.email)
                 .then(function (result) {
                     console.log(result)
                 })
@@ -17,55 +20,32 @@ describe('cadastro', function () {
 
         it('deve cadastrar com sucesso', function () {
             signupPage.go()
-            signupPage.form(user)
+            signupPage.form(this.success)
             signupPage.submit()
             signupPage.toast.shouldHaveText('Agora você se tornou um(a) Samurai, faça seu login para ver seus agendamentos!')
         })
     })
 
     context('quando o email ja existe', function () {
-        const user = {
-            name: 'Edu',
-            email: 'qa700@putsbox.com',
-            password: 'Teste123456',
-            is_provider: true
-        }
-
         before(function () {
-            cy.task('removeUser', user.email)
-                .then(function (result) {
-                    console.log(result)
-                })
-
-            cy.request(
-                'POST',
-                'http://localhost:3333/users',
-                user
-            ).then(function (response) {
-                expect(response.status).to.eq(200)
-            })
+            cy.postUser(this.email_dup)
         })
 
         it('nao deve cadastrar o usuario', function () {
             signupPage.go()
-            signupPage.form(user)
+            signupPage.form(this.email_dup)
             signupPage.submit()
             signupPage.toast.shouldHaveText('Email já cadastrado para outro usuário.')
         })
     })
 
     context('quando o email é incorrecto', function () {
-        const user = {
-            name: 'Email incorreto',
-            email: 'qa10putsbox.com',
-            password: 'Teste123456'
-        }
 
         it('deve exibir mensagem de alerta', function () {
             signupPage.go()
-            signupPage.form(user)
+            signupPage.form(this.email_inv)
             signupPage.submit()
-            signupPage.alertHaveText('Informe um email válido')
+            signupPage.alert.haveText('Informe um email válido')
         })
     })
 
@@ -80,15 +60,15 @@ describe('cadastro', function () {
         passwords.forEach(function (p) {
             it('nao deve cadastrar com a senha: ' + p, function () {
 
-                const user = { name: 'John', email: 'john@example.com', password: p }
+                this.short_password.password = p
 
-                signupPage.form(user)
+                signupPage.form(this.short_password)
                 signupPage.submit()
             })
         })
 
         afterEach(function () {
-            signupPage.alertHaveText('Pelo menos 6 caracteres')
+            signupPage.alert.haveText('Pelo menos 6 caracteres')
         })
     })
 
@@ -99,14 +79,14 @@ describe('cadastro', function () {
             'Senha é obrigatória'
         ]
 
-        before(function() {
+        before(function () {
             signupPage.go()
             signupPage.submit()
         })
 
-        alertMessages.forEach(function(alert) {
-            it('deve exibir ' + alert.toLowerCase(), function(){
-                signupPage.alertHaveText(alert)
+        alertMessages.forEach(function (alert) {
+            it('deve exibir ' + alert.toLowerCase(), function () {
+                signupPage.alert.haveText(alert)
             })
         })
     })

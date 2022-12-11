@@ -1,0 +1,23 @@
+{
+  "success": {
+    "name": "Edu",
+    "email": "qa10@putsbox.com",
+    "password": "Teste123456"
+  },
+  "email_dup": {
+    "name": "Edu",
+    "email": "qa700@putsbox.com",
+    "password": "Teste123456",
+    "is_provider": true
+  },
+  "email_inv": {
+    "name": "Email incorreto",
+    "email": "qa10putsbox.com",
+    "password": "Teste123456"
+  },
+  "short_password": {
+    "name": "John",
+    "email": "john@example.com",
+    "password": null
+  }
+}
