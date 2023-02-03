@@ -31,22 +31,22 @@ Cypress.Commands.add('postUser', function (user) {
             console.log(result)
         })
 
-    cy.request(
-        'POST',
-        'http://localhost:3333/users',
-        user
-    ).then(function (response) {
+    cy.request({
+        method: 'POST',
+        url: 'http://localhost:3333/users',
+        body: user
+    }).then(function (response) {
         expect(response.status).to.eq(200)
     })
 })
 
 Cypress.Commands.add('recoveryPass', function (email) {
 
-    cy.request(
-        'POST',
-        'http://localhost:3333/password/forgot',
-        { email: email }
-    ).then(function (response) {
+    cy.request({
+        method: 'POST',
+        url: 'http://localhost:3333/password/forgot',
+        body: { email: email }
+    }).then(function (response) {
         expect(response.status).to.eq(204)
 
         cy.task('findToken', email)
@@ -59,7 +59,7 @@ Cypress.Commands.add('recoveryPass', function (email) {
 
 Cypress.Commands.add('createAppointment', function (hour) {
     let now = new Date()
-    now.setDate(now.getDate() + 1)
+    now.setDate(now.getDate() + 3)
 
     Cypress.env('appointmentDay', now.getDate())
 
