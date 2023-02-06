@@ -44,7 +44,7 @@ describe('resgate de senha', function () {
             rpPage.form('abc123', 'abc123')
             rpPage.submit()
 
-            const message = 'Agora você já pode logar com a sua nova senha secreta.'
+            const message = 'Agora1 você já pode logar com a sua nova senha secreta.'
             rpPage.toast.shouldHaveText(message)
 
         })
