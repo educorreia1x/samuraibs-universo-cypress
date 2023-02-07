@@ -4,6 +4,7 @@ const { Pool } = require("pg");
 module.exports = defineConfig({
   viewportWidth: 1440,
   viewportHeight: 900,
+  defaultCommandTimeout: 30000,
   "dbConfig": {
     "host": "peanut.db.elephantsql.com",
     "user": "npjexkhe",
@@ -12,7 +13,7 @@ module.exports = defineConfig({
     "port": 5432
   },
   e2e: {
-    "baseUrl": "http://localhost:3000",
+    "baseUrl": "https://samuraibs-web-edu.onrender.com",
     setupNodeEvents(on, config) {
       // implement node event listeners here
 
