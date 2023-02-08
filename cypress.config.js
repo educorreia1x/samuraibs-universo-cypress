@@ -2,6 +2,7 @@ const { defineConfig } = require("cypress");
 const { Pool } = require("pg");
 
 module.exports = defineConfig({
+  projectId: "3fixcz",
   viewportWidth: 1440,
   viewportHeight: 900,
   defaultCommandTimeout: 30000,
