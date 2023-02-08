@@ -11,7 +11,7 @@ jobs:
   # This workflow contains a single job called "build"
   chrome-ui-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node16.17.1-chrome106-ff105-edge
+    container: cypress/browsers:node18.12.0-chrome107
     strategy:
       fail-fast: false
       matrix:
@@ -19,7 +19,7 @@ jobs:
         containers: [1]
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
         
       - name: Ping API (Render)
         uses: Leocardoso94/is-my-site-up@v1.2
@@ -27,7 +27,7 @@ jobs:
           site: https://samuraibs-api-edu.onrender.com
         
       - name: 'UI Tests - Chrome'
-        uses: cypress-io/github-action@v2 # use the explicit version number
+        uses: cypress-io/github-action@v5 # use the explicit version number
         with:
           # we have already installed all dependencies above
           install-command: yarn install --frozen-lockfile
