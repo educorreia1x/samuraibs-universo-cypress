@@ -1,30 +1,25 @@
+# This is a basic workflow to help you get started with Actions
+
 name: Chrome UI Tests
 
-
+# Controls when the workflw will run
 on:
   workflow_dispatch:
 
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
+  # This workflow contains a single job called "build"
   chrome-ui-tests:
     runs-on: ubuntu-latest
-    container: cypress/browsers:node18.12.0-chrome106-ff106
+    container: cypress/browsers:node16.17.1-chrome106-ff105-edge
     strategy:
       fail-fast: false
       matrix:
+        # run copies of the current job in parallel
         containers: [1]
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
-        
-      - name: Persist Next.js build cache
-        uses: actions/cache@v2
-        with:
-          path: ${{ github.workspace }}/.next/cache
-          # Generate a new cache whenever packages or source files change.
-          key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
-          # If source files changed but packages didn't, rebuild from a prior cache.
-          restore-keys: |
-            ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-
+        uses: actions/checkout@v2
         
       - name: Ping API (Render)
         uses: Leocardoso94/is-my-site-up@v1.2
@@ -32,11 +27,10 @@ jobs:
           site: https://samuraibs-api-edu.onrender.com
         
       - name: 'UI Tests - Chrome'
-        uses: cypress-io/github-action@v5 # use the explicit version number
+        uses: cypress-io/github-action@v2 # use the explicit version number
         with:
-          build: yarn build
+          # we have already installed all dependencies above
           install-command: yarn install
-          command: npx cypress run
           wait-on: 'https://samuraibs-web-edu.onrender.com'
           wait-on-timeout: 120
           browser: chrome
