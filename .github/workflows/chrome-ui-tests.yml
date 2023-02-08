@@ -1,17 +1,13 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Chrome UI Tests
 
-# Controls when the workflw will run
+
 on:
   workflow_dispatch:
 
-# A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
-  # This workflow contains a single job called "build"
   chrome-ui-tests:
-    runs-on: ubuntu-latest
-    container: cypress/browsers:node16.17.1-chrome106-ff105-edge
+    runs-on: ubuntu-22.04
+    container: cypress/browsers:node18.12.0-chrome106-ff106
     strategy:
       fail-fast: false
       matrix:
@@ -29,7 +25,6 @@ jobs:
       - name: 'UI Tests - Chrome'
         uses: cypress-io/github-action@v5 # use the explicit version number
         with:
-          # we have already installed all dependencies above
           install-command: yarn install
           wait-on: 'https://samuraibs-web-edu.onrender.com'
           wait-on-timeout: 120
