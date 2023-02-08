@@ -1,0 +1,63 @@
+# This is a basic workflow to help you get started with Actions
+
+name: Firefox UI Tests
+
+# Controls when the workflw will run
+on:
+  workflow_dispatch:
+    inputs:
+      specs:
+        description: 'Run All or unique spec'
+        default: cypress/e2e/*
+
+# A workflow run is made up of one or more jobs that can run sequentially or in parallel
+jobs:
+  # This workflow contains a single job called "build"
+  chrome-ui-tests:
+    runs-on: ubuntu-latest
+    container:
+      image: cypress/browsers:node18.12.0-chrome106-ff106
+      options: --user 1001
+    strategy:
+      fail-fast: false
+      matrix:
+        # run copies of the current job in parallel
+        containers: [1]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        
+      - name: Persist Next.js build cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          # Generate a new cache whenever packages or source files change.
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-${{ hashFiles('**.[jt]s', '**.[jt]sx') }}
+          # If source files changed but packages didn't, rebuild from a prior cache.
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('yarn.lock') }}-
+        
+      - name: Ping API (Render)
+        uses: Leocardoso94/is-my-site-up@v1.2
+        with:
+          site: https://samuraibs-api-edu.onrender.com
+        
+      - name: 'UI Tests - Firefox'
+        uses: cypress-io/github-action@v5 # use the explicit version number
+        with:
+          # we have already installed all dependencies above
+          build: yarn install
+          #install-command: yarn install
+          wait-on: 'https://samuraibs-web-edu.onrender.com'
+          wait-on-timeout: 120
+          browser: firefox
+          record: true
+          parallel: true
+          group: 'UI - Firefox'
+          spec: ${{ github.event.inputs.specs }}
+        env:
+          TZ: America/Sao_Paulo
+          CYPRESS_RECORD_KEY: ${{ secrets.CYPRESS_RECORD_KEY }}
+          # Recommended: pass the GitHub token lets this action correctly
+          # determine the unique run id necessary to re-run the checks
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
